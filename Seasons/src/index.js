@@ -1,17 +1,52 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import ReactDOM, { render } from 'react-dom';
+import SeasonDisplay from './SeasonDisplay';
+import Loading from './Loading';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+class App extends React.Component{
+    state = { lat : null ,errMsg: ''};
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+    renderContent(){
+        if (this.state.errMsg && !this.state.lat) {
+            return (
+                <div>
+                    Error : {this.state.errMsg}
+                </div>
+            );
+        } 
+        else if(!this.state.errMsg && this.state.lat){
+            return (
+                <SeasonDisplay lat={this.state.lat}/>
+            );
+        }
+        else{
+            return (
+                <Loading text="Waiting for User's Response"/>
+            );
+        }
+    }
+    //React Says we have to define render!!
+    render(){
+        return (
+            <div>
+                {this.renderContent()}
+            </div>
+        );
+    }
+
+    componentDidMount(){
+        
+        window.navigator.geolocation.getCurrentPosition(
+            //we called setState!!!
+            //we cannot set it as a variable
+            position => {
+                this.setState({ lat : position.coords.latitude });
+            },
+            err => {
+              this.setState({errMsg : err.message});  
+            }
+        );
+    }
+};
+
+ReactDOM.render(<App/>, document.querySelector('#root'));
