@@ -2,7 +2,7 @@ import React from 'react';
 
 class ImageCard extends React.Component{
     constructor(props){
-        super(props)
+        super(props);
         this.state = {spans : 0};
         this.imageRef = React.createRef();
     }
@@ -13,7 +13,7 @@ class ImageCard extends React.Component{
         const spans = Math.ceil(height/10 + 1);
 
         this.setState({spans});
-    };
+    }
 
     componentDidMount(){
         this.imageRef.current.addEventListener('load',this.setSpans);
